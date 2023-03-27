@@ -1,5 +1,6 @@
 package com.flight.view;
 
+import com.flight.Main;
 import com.flight.model.Validator;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -31,11 +32,14 @@ public class AttributeTable<T> extends VBox {
 
     private final Class<T> type;
 
-    public AttributeTable(ObservableList<T> items, Class<T> type, Runnable onCommitChanges) {
+    public AttributeTable(Main main, ObservableList<T> items, Class<T> type, Runnable onCommitChanges) {
         this.type = type;
 
         TableView<T> tableView = new TableView<>();
         tableView.setItems(items);
+
+        Button back = new Button("<-");
+        back.setOnAction(e -> main.gotoMenu());
 
 
         getFields(type).stream()
@@ -94,7 +98,7 @@ public class AttributeTable<T> extends VBox {
             onCommitChanges.run();
             tableView.refresh();
         });
-        getChildren().addAll(tableView, pane, commitChanges);
+        getChildren().addAll(back, tableView, pane, commitChanges);
     }
 
 
