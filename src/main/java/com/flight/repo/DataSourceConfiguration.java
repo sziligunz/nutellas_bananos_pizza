@@ -14,8 +14,8 @@ public class DataSourceConfiguration {
         return DataSourceBuilder.create()
                 .driverClassName("oracle.jdbc.OracleDriver")
                 .url("jdbc:oracle:thin:@localhost:1521:orania2")
-                .username("C##BFYF5U")
-                .password("MATT")
+                .username("C##AQ56DX")
+                .password("kigyo321")
                 .build();
     }
 }
