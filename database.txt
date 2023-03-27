@@ -1,0 +1,263 @@
+CREATE OR REPLACE PROCEDURE drop_table_if_exists(table_name_ IN VARCHAR2) IS
+    table_exists INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO table_exists FROM user_tables WHERE table_name = upper(table_name_);
+--     DBMS_OUTPUT.PUT_LINE(table_exists);
+    IF table_exists > 0 THEN
+        EXECUTE IMMEDIATE 'DROP TABLE ' || table_name_ || ' CASCADE CONSTRAINTS';
+    END IF;
+END;
+/
+
+BEGIN
+    drop_table_if_exists('AIRPORT');
+    drop_table_if_exists('AIRLINE');
+    drop_table_if_exists('PLANE');
+    drop_table_if_exists('FLIGHT');
+    drop_table_if_exists('SCHEDULE');
+    drop_table_if_exists('HOTEL');
+    drop_table_if_exists('INSURANCE_COMPANY');
+    drop_table_if_exists('INSURANCE_PACKAGE');
+    drop_table_if_exists('INSURANCE_PACKAGE_COVERAGE');
+    drop_table_if_exists('"USER"');
+    drop_table_if_exists('BOOKING');
+    drop_table_if_exists('CLASS_CLASSIFIER');
+END;
+/
+-- drop table AIRPORT cascade constraints;
+-- drop table AIRLINE cascade constraints;
+-- drop table PLANE cascade constraints;
+-- drop table FLIGHT cascade constraints;
+-- drop table SCHEDULE cascade constraints;
+-- drop table HOTEL cascade constraints;
+-- drop table INSURANCE_COMPANY cascade constraints;
+-- drop table INSURANCE_PACKAGE cascade constraints;
+-- drop table INSURANCE_PACKAGE_COVERAGE cascade constraints;
+-- drop table "USER" cascade constraints;
+-- drop table BOOKING cascade constraints;
+-- drop table CLASS_CLASSIFIER cascade constraints;
+/
+
+create table AIRPORT
+(
+    id               INTEGER GENERATED ALWAYS as identity
+        constraint "AIRPORT_pk" primary key,
+    country          VARCHAR(40)  not null,
+    city             VARCHAR(40)  not null,
+    capacity         INTEGER default 0,
+    vaccine_required INTEGER default 0,
+    url              VARCHAR(160) not null
+)
+/
+
+
+create table AIRLINE
+(
+    name           VARCHAR(40) not null
+        constraint "AIRLINE_pk"
+            primary key,
+    price_category INTEGER default 0,
+    star_rating    FLOAT   default 5
+)
+/
+
+create table PLANE
+(
+    id                   INTEGER GENERATED ALWAYS as identity
+        constraint "PLANE_pk"
+            primary key,
+    make                 VARCHAR(40),
+    first_class_capacity INTEGER default 0,
+    commercial_capacity  INTEGER default 0,
+    business_capacity    INTEGER default 0,
+    model_name           VARCHAR(40),
+    fuel_consumption     FLOAT   default 0.0,
+    owning_airline       VARCHAR(40) not null
+        constraint "PLANE_AIRLINE_fk"
+            references AIRLINE (name)
+                on delete cascade
+)
+/
+
+
+create table FLIGHT
+(
+    id              INTEGER GENERATED ALWAYS as identity
+        constraint "FLIGHT_pk"
+            primary key,
+    departure       INTEGER     not null
+        constraint "FLIGHT_DEPARTURE_fk"
+            references AIRPORT (id)
+                on delete cascade,
+    arrival         INTEGER     not null
+        constraint "FLIGHT_ARRIVAL_fk"
+            references AIRPORT (id)
+                on delete cascade,
+    airline         VARCHAR(40) not null
+        constraint "FLIGHT_AIRLINE_fk"
+            references AIRLINE (name)
+                on delete cascade,
+    meal_available  INTEGER default 0,
+    flight_duration INTEGER,
+    child_friendly  INTEGER default 0
+)
+/
+
+
+create table SCHEDULE
+(
+    flight_id         INTEGER not null
+        constraint "SCHEDULE_FLIGHT_fk"
+            references FLIGHT (id)
+                on delete cascade,
+    plane_id          INTEGER not null
+        constraint "SCHEDULE_PLANE_fk"
+            references PLANE (id)
+                on delete cascade,
+    departure_time    DATE    not null,
+    first_class_price INTEGER,
+    commercial_price  INTEGER,
+    business_price    INTEGER,
+    constraint "SCHEDULE_pk"
+        primary key (flight_id, plane_id, departure_time)
+)
+/
+
+
+create table HOTEL
+(
+    id          INTEGER GENERATED ALWAYS as identity
+        constraint "HOTEL_pk"
+            primary key,
+    country     VARCHAR(40) not null,
+    city        VARCHAR(40) not null,
+    star_rating INTEGER default 3,
+    url         VARCHAR(160)
+)
+/
+
+
+create table INSURANCE_COMPANY
+(
+    name VARCHAR(40) not null
+        constraint "INSURANCE_COMPANY_pk"
+            primary key,
+    url  VARCHAR(160)
+)
+/
+
+
+create table INSURANCE_PACKAGE
+(
+    name                   VARCHAR(40) not null,
+    insurance_company_name VARCHAR(40) not null
+        constraint "INSURANCE_PACKAGE_INSURANCE_COMPANY_fk"
+            references INSURANCE_COMPANY (name)
+                on delete cascade,
+    price                  INTEGER     not null,
+    constraint "INSURANCE_PACKAGE_pk"
+        primary key (name, insurance_company_name)
+)
+/
+
+
+create table INSURANCE_PACKAGE_COVERAGE
+(
+    insurance_company_name VARCHAR(40) not null,
+    insurance_package_name VARCHAR(40) not null,
+    damage_type            VARCHAR(60) not null,
+    constraint "INSURANCE_PACKAGE_COVERAGE_pk"
+        primary key (insurance_company_name, insurance_package_name, damage_type),
+    constraint "INSURANCE_PACKAGE_COVERAGE_PACKAGE_fk"
+        foreign key (insurance_company_name, insurance_package_name) references INSURANCE_PACKAGE (insurance_company_name, name)
+            on delete cascade
+)
+/
+
+
+create table "USER"
+(
+    name            VARCHAR(40)  not null,
+    email           VARCHAR(40)  not null
+        constraint "USER_pk"
+            primary key,
+    hashed_password VARCHAR(160) not null,
+    privilege       VARCHAR(40) default 'user'
+)
+/
+
+
+create table BOOKING
+(
+    user_email        VARCHAR(40) not null
+        constraint "BOOKING_USER_fk"
+            references "USER" (email)
+                on delete cascade,
+    flight_id         INTEGER     not null,
+    plane_id          INTEGER     not null,
+    departure_time    DATE        not null,
+    seat_number       INTEGER     not null,
+    insurance_company VARCHAR(40),
+    insurance_package VARCHAR(40),
+    constraint "BOOKING_pk"
+        primary key (user_email, flight_id, plane_id, departure_time, seat_number),
+    constraint "BOOKING_SCHEDULE_fk"
+        foreign key (flight_id, plane_id, departure_time) references SCHEDULE (flight_id, plane_id, departure_time)
+            on delete cascade,
+    constraint "BOOKING_INSURANCE_PACKAGE_fk"
+        foreign key (INSURANCE_COMPANY, INSURANCE_PACKAGE) references INSURANCE_PACKAGE (INSURANCE_COMPANY_NAME, NAME)
+            on delete set null
+)
+/
+
+
+create table CLASS_CLASSIFIER
+(
+    flight_id      INTEGER     not null,
+    plane_id       INTEGER     not null,
+    departure_time DATE        not null,
+    seat_number    INTEGER     not null,
+    class          VARCHAR(40) not null,
+    constraint "CLASS_CLASSIFIER_pk"
+        primary key (flight_id, plane_id, departure_time, seat_number),
+    constraint "CLASS_CLASSIFIER_SCHEDULE_fk"
+        foreign key (flight_id, plane_id, departure_time) references SCHEDULE (flight_id, plane_id, departure_time)
+            on delete cascade
+)
+/
+-- select u1_0.email, u1_0.hashed_password, u1_0.name, u1_0.privilege
+-- from "USER" u1_0
+
+INSERT INTO AIRPORT (COUNTRY, CITY, CAPACITY, VACCINE_REQUIRED, URL) VALUES ('Germany', 'Berlin', 500, 0, 'https://ber.berlin-airport.de/en.html');
+INSERT INTO AIRPORT (COUNTRY, CITY, CAPACITY, VACCINE_REQUIRED, URL) VALUES ('Austria', 'Wien', 300, 1, 'https://www.viennaairport.com');
+INSERT INTO AIRPORT (COUNTRY, CITY, CAPACITY, VACCINE_REQUIRED, URL) VALUES ('United Kingdom', 'London', 800, 0, 'https://www.heathrow.com');
+
+INSERT INTO INSURANCE_COMPANY (NAME, URL) VALUES ('LOT', 'https://www.lot.com/se/en/journey/additional-services/travel-insurance');
+INSERT INTO INSURANCE_COMPANY (NAME, URL) VALUES ('TripInsurance', 'https://tripinsurance.us');
+INSERT INTO INSURANCE_COMPANY (NAME, URL) VALUES ('Allianz', 'https://www.allianz.hu/hu_EN/individuals/travel-insurance/types-of-travel-insurance.html');
+
+INSERT INTO AIRLINE (NAME, PRICE_CATEGORY, STAR_RATING) VALUES ('Lufthansa', 5, 4);
+INSERT INTO AIRLINE (NAME, PRICE_CATEGORY, STAR_RATING) VALUES ('American Airlines', 3, 3);
+INSERT INTO AIRLINE (NAME, PRICE_CATEGORY, STAR_RATING) VALUES ('Delta', 2, 2);
+
+INSERT INTO PLANE (MAKE, FIRST_CLASS_CAPACITY, COMMERCIAL_CAPACITY, BUSINESS_CAPACITY, MODEL_NAME, FUEL_CONSUMPTION, OWNING_AIRLINE) VALUES ('Boeing', 50, 150, 180, '747-400', 150000, 'Lufthansa');
+INSERT INTO PLANE (MAKE, FIRST_CLASS_CAPACITY, COMMERCIAL_CAPACITY, BUSINESS_CAPACITY, MODEL_NAME, FUEL_CONSUMPTION, OWNING_AIRLINE) VALUES ('Boeing', 50, 150, 180, '747-400', 150000, 'Lufthansa');
+INSERT INTO PLANE (MAKE, FIRST_CLASS_CAPACITY, COMMERCIAL_CAPACITY, BUSINESS_CAPACITY, MODEL_NAME, FUEL_CONSUMPTION, OWNING_AIRLINE) VALUES ('Boeing', 50, 150, 180, '747-400', 150000, 'Lufthansa');
+INSERT INTO PLANE (MAKE, FIRST_CLASS_CAPACITY, COMMERCIAL_CAPACITY, BUSINESS_CAPACITY, MODEL_NAME, FUEL_CONSUMPTION, OWNING_AIRLINE) VALUES ('Boeing', 80, 190, 250, '757-360', 180000, 'Delta');
+INSERT INTO PLANE (MAKE, FIRST_CLASS_CAPACITY, COMMERCIAL_CAPACITY, BUSINESS_CAPACITY, MODEL_NAME, FUEL_CONSUMPTION, OWNING_AIRLINE) VALUES ('Boeing', 80, 190, 250, '757-360', 180000, 'Delta');
+
+INSERT INTO INSURANCE_PACKAGE (NAME, INSURANCE_COMPANY_NAME, PRICE) VALUES ('Minimal', 'LOT', 30);
+INSERT INTO INSURANCE_PACKAGE (NAME, INSURANCE_COMPANY_NAME, PRICE) VALUES ('Medium', 'LOT', 40);
+INSERT INTO INSURANCE_PACKAGE (NAME, INSURANCE_COMPANY_NAME, PRICE) VALUES ('All', 'LOT', 60);
+INSERT INTO INSURANCE_PACKAGE (NAME, INSURANCE_COMPANY_NAME, PRICE) VALUES ('All And Beyond', 'Allianz', 75);
+INSERT INTO INSURANCE_PACKAGE (NAME, INSURANCE_COMPANY_NAME, PRICE) VALUES ('Premium', 'TripInsurance', 99);
+
+INSERT INTO HOTEL (COUNTRY, CITY, STAR_RATING, URL) VALUES ('Germany', 'Berlin', 5, 'https://www.ihg.com/hotelindigo/hotels/gb/en/berlin/beres/hoteldetail?cm_mmc=GoogleMaps-_-IN-_-DE-_-BERES');
+INSERT INTO HOTEL (COUNTRY, CITY, STAR_RATING, URL) VALUES ('Austria', 'Wien', 5, 'https://www.sacher.com/de/wien/');
+INSERT INTO HOTEL (COUNTRY, CITY, STAR_RATING, URL) VALUES ('United Kingdom', 'London', 4, 'https://www.hilton.com/en/hotels/lhrhitw-hilton-london-kensington/?SEO_id=GMB-EMEA-TW-LHRHITW');
+
+INSERT INTO INSURANCE_PACKAGE_COVERAGE (INSURANCE_COMPANY_NAME, INSURANCE_PACKAGE_NAME, DAMAGE_TYPE) VALUES ('Allianz', 'All And Beyond', 'Belongings, Baggage, Health, Delay');
+INSERT INTO INSURANCE_PACKAGE_COVERAGE (INSURANCE_COMPANY_NAME, INSURANCE_PACKAGE_NAME, DAMAGE_TYPE) VALUES ('LOT', 'All', 'Belongings, Baggage and Health');
+INSERT INTO INSURANCE_PACKAGE_COVERAGE (INSURANCE_COMPANY_NAME, INSURANCE_PACKAGE_NAME, DAMAGE_TYPE) VALUES ('LOT', 'Medium', 'Belongings and Baggage');
+INSERT INTO INSURANCE_PACKAGE_COVERAGE (INSURANCE_COMPANY_NAME, INSURANCE_PACKAGE_NAME, DAMAGE_TYPE) VALUES ('LOT', 'Minimal', 'Belongings');
+INSERT INTO INSURANCE_PACKAGE_COVERAGE (INSURANCE_COMPANY_NAME, INSURANCE_PACKAGE_NAME, DAMAGE_TYPE) VALUES ('TripInsurance', 'Premium', 'Belongings, Baggage, Health, Delay, Valuables');
