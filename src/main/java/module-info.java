@@ -12,6 +12,7 @@ open module com.flight {
     requires spring.core;
     requires spring.data.jpa;
     requires ojdbc8;
+    requires spring.tx;
 
 
 //    opens com.flight.gui to javafx.fxml, spring.core;
