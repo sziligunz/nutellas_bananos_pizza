@@ -30,12 +30,12 @@ public class UserController {
         throw new Exception("Bad email");
     }
 
-    public String registerUser(String email, String name, String pw){
+    public User registerUser(String email, String name, String pw) throws Exception {
         if (Objects.equals(email, "") || Objects.equals(pw, "") || Objects.equals(name, "") ) {
-            return "Failed";
+            throw new Exception("All field must contain letters");
         }
         if(userRepository.getUserByEmail(email).isPresent()){
-            return "Failed";
+            throw new Exception("Email in use");
         }
         Iterable<User> users = userRepository.findAll();
         User user = new User();
@@ -45,11 +45,10 @@ public class UserController {
         user.setPrivilege("user");
 
         try {
-
             userRepository.save(user);
         } catch (Exception ignored) {
-            return "Failed";
+            throw ignored;
         }
-        return "Success";
+        return user;
     }
 }
