@@ -1,8 +1,11 @@
 package com.flight;
 
 import com.flight.model.Hotel;
+import com.flight.model.User;
+import com.flight.repo.UserRepository;
 import com.flight.view.AttributeTable;
 import com.flight.view.HelloController;
+import com.flight.view.UserController;
 import com.flight.view.View;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -13,8 +16,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -22,6 +28,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.support.Repositories;
+import org.springframework.stereotype.Repository;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,12 +38,15 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 @SpringBootApplication
+@RequiredArgsConstructor
 @EnableJpaRepositories
 public class Main extends Application {
     private static Repositories repositories;
     private ConfigurableApplicationContext springContext;
+    private UserController userController;
     private Stage stage;
     private Scene menu;
+    public User user;
 
 
     public static void main(String[] args) {
@@ -86,9 +97,19 @@ public class Main extends Application {
 //        root = fxmlLoader.load();
 
 
+        userController = new UserController((UserRepository)getRepositoryFor(User.class));
         VBox menuRoot = new VBox();
         menuRoot.setAlignment(Pos.CENTER);
         menuRoot.setSpacing(5);
+
+        //TODO login, register, logout gombok csinálnak dolgokat
+        Button login = new Button("Login");
+        login.setOnAction(e -> {
+            stage.setScene(sceneGen("login"));
+        });
+        Button register = new Button("Register");
+        Button logout = new Button("Logout");
+        menuRoot.getChildren().add(login);
 
         try (
                 InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("com.flight.model".replaceAll("[.]", "/"));
@@ -122,6 +143,38 @@ public class Main extends Application {
         stage.show();
     }
 
+    public Scene sceneGen(String name){
+        VBox box = new VBox();
+        box.setAlignment(Pos.CENTER);
+        Button back = new Button("Back");
+        back.setOnAction(e->gotoMenu());
+        box.getChildren().add(back);
+        if(name.equals("login")){
+            System.out.println("login");
+            Label email = new Label("Email");
+            Label pw = new Label("Password");
+            TextField emailTF = new TextField();
+            TextField pwTF = new TextField();
+            Button login = new Button("Login");
+            login.setOnAction(e->{
+                try{
+                    user = userController.login(emailTF.getText(), pwTF.getText());
+                    gotoMenu();
+                }
+                catch (Exception exception){
+                    System.err.println(exception);
+                }
+            });
+            box.getChildren().add(email);
+            box.getChildren().add(emailTF);
+            box.getChildren().add(pw);
+            box.getChildren().add(pwTF);
+            box.getChildren().add(login);
+            return new Scene(box);
+        }
+        return null;
+    }
+
     @Override
     public void stop() {
         springContext.stop();
@@ -130,5 +183,6 @@ public class Main extends Application {
 
     public void gotoMenu() {
         stage.setScene(menu);
+        System.out.println(user);
     }
 }

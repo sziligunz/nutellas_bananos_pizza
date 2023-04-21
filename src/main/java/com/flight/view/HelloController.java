@@ -5,6 +5,7 @@ import com.flight.model.ClassClassifier;
 import com.flight.model.Hotel;
 import com.flight.repo.ClassClassifierRepository;
 import com.flight.repo.HotelRepository;
+import com.flight.repo.UserRepository;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HelloController {
     private final HotelRepository repository;
+    private final UserRepository userRepository;
     @FXML
     private Label welcomeText;
 

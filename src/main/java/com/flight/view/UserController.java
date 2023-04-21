@@ -19,15 +19,15 @@ public class UserController {
 
     private final UserRepository userRepository;
 
-    public String login(String email, String pw){
+    public User login(String email, String pw) throws Exception {
         if(userRepository.getUserByEmail(email).isEmpty()){
-            return "Nincs ilyen felhasználó";
+            throw new Exception("Bad email");
         }
         User user = userRepository.getUserByEmail(email).get();
         if(user.getEmail().equals(email) && user.getHashedPassword().equals(pw)){
-            return "Siker";
+            return user;
         }
-        return "Nem egyezik a jelszó vagy email";
+        throw new Exception("Bad email");
     }
 
     public String registerUser(String email, String name, String pw){

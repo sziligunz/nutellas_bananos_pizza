@@ -17,14 +17,18 @@ public interface UserRepository extends CrudRepository<User, String> {
     Optional<User> getUserByEmail(@Param("email") String email);
 
 
+    @Query("SELECT user FROM User user WHERE user.email = :#{#email} and user.hashedPassword = :#{#pw}")
+    Optional<User> getUserByEmailAndHashedPassword(@Param("email") String email, @Param("pw") String pw);
+
+
     @Transactional
     @Modifying
     @Query("UPDATE User user SET user.privilege = :#{#newRole} WHERE user.email = :#{#email}")
-    void updateUserRole(@Param("id") int id, @Param("newRole") String newRole);
+    void updateUserRole(@Param("email") int email, @Param("newRole") String newRole);
 
 
     @Transactional
     @Modifying
-    @Query("UPDATE User user SET user.hashedPassword = :#{#newPassword} WHERE user.id = :#{#id}")
-    void updateUserPassword(@Param("id") int id, @Param("newPassword") String newPassword);
+    @Query("UPDATE User user SET user.hashedPassword = :#{#newPassword} WHERE user.email = :#{#email}")
+    void updateUserPassword(@Param("email") int email, @Param("newPassword") String newPassword);
 }
