@@ -1,7 +1,9 @@
 package com.flight;
 
 import com.flight.model.Hotel;
+import com.flight.model.Schedule;
 import com.flight.model.User;
+import com.flight.repo.ScheduleRepository;
 import com.flight.repo.UserRepository;
 import com.flight.view.AttributeTable;
 import com.flight.view.HelloController;
@@ -17,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -30,6 +33,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
@@ -100,11 +104,10 @@ public class Main extends Application {
             repository.findAll().forEach(a::add);
 
             a.removeAll(observableList);
-
-
             repository.saveAll(observableList);
             repository.deleteAll(removed);
-            repository.deleteAll(a);
+            //ettől döglödik az egész nehogy kikommentezd
+            //repository.deleteAll(a);
             removed.clear();
         });
     }
@@ -115,7 +118,6 @@ public class Main extends Application {
         Main.repositories = new Repositories(springContext);
         FXMLLoader fxmlLoader = new FXMLLoader(HelloController.class.getResource("hello-view.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
-        userController = new UserController((UserRepository)getRepositoryFor(User.class));
         menu = new Scene(new VBox());
 //        root = fxmlLoader.load();
         loadUser();
@@ -144,6 +146,7 @@ public class Main extends Application {
             login.setOnAction(e->{
                 try{
                     user = userController.login(emailTF.getText(), pwTF.getText());
+                    loadMenu();
                     gotoMenu();
                 }
                 catch (Exception exception){
@@ -170,6 +173,7 @@ public class Main extends Application {
             register.setOnAction(e->{
                 try{
                     user = userController.registerUser(emailTF.getText(),fullnameTF.getText(), pwTF.getText());
+                    loadMenu();
                     gotoMenu();
                 }
                 catch (Exception exception){
@@ -195,6 +199,7 @@ public class Main extends Application {
     }
 
     public void loadUser(){
+        userController = new UserController((UserRepository)getRepositoryFor(User.class));
         System.out.println("loaduser");
         VBox menuRoot = new VBox();
         menuRoot.setPrefSize(400,400);
@@ -220,6 +225,7 @@ public class Main extends Application {
     }
     public void loadMenu() {
         System.out.println("Loadmenu");
+        schedule();
         VBox menuRoot = new VBox();
         menuRoot.setPrefSize(400,400);
         menuRoot.setAlignment(Pos.CENTER);
@@ -258,10 +264,18 @@ public class Main extends Application {
 
     public void gotoMenu() {
         if(user == null) loadUser();
-        else{
-            loadMenu();
-        }
         stage.setScene(menu);
         System.out.println(user);
     }
+
+    public void schedule(){
+        TableView<String> tableView = new TableView<>();
+        System.out.println("SCHEDÖSADKWP");
+        var scheduleRepository = getRepositoryFor(Schedule.class);
+        Iterable<Schedule> asd = scheduleRepository.findAll();
+        for(var item: asd){
+            System.out.println(item.getFlight().getArrival().getCity() +" : "+ item.getFlight().getDeparture().getCity() + item.getDepartureTime());
+        }
+    }
+
 }
