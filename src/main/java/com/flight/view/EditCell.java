@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class EditCell<IN extends Control & PluggableInput<T>, S, T> extends TableCell<S, T> {
     public EditCell(IN input, Optional<Validator> validator) {
-        input.setValidator(validator);
+//        input.setValidator(validator);
 
         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         Platform.runLater(() -> {
@@ -23,6 +23,8 @@ public class EditCell<IN extends Control & PluggableInput<T>, S, T> extends Tabl
         });
 
         input.itemProperty().addListener((obs, oldV, newV) -> {
+            input.editableProperty().setValue(false);
+
             super.getTableView().setEditable(true);
             super.getTableColumn().setEditable(true);
             super.setEditable(true);
@@ -34,13 +36,18 @@ public class EditCell<IN extends Control & PluggableInput<T>, S, T> extends Tabl
             super.setEditable(false);
             super.getTableColumn().setEditable(false);
             super.getTableView().setEditable(false);
+
+
+            input.editableProperty().setValue(true);
         });
 
         setGraphic(input);
         setAlignment(Pos.CENTER);
     }
 
-    public static <IN extends Control & PluggableInput<Object>> IN getPluggable(View.SingleVale annotation, boolean disabled) {
+    public static <IN extends Control & PluggableInput<Object>> IN getPluggable(
+            View.SingleVale annotation, boolean disabled) {
+
         Map<Class<?>, Supplier<PluggableInput<?>>> classToIN = Map.of(
                 TextField.class, PluggableInput.PluggableTextField::new,
                 CheckBox.class, PluggableInput.PluggableCheckBox::new,

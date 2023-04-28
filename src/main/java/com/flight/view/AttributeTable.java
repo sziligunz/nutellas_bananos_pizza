@@ -67,7 +67,10 @@ public class AttributeTable<T> extends VBox {
                     private final Button deleteButton = new Button("delete");
 
                     {
-                        deleteButton.setOnAction(e -> tableView.getItems().remove(getTableRow().getItem()));
+                        deleteButton.setOnAction(e -> {
+                            tableView.getItems().remove(getTableRow().getItem());
+                            tableView.refresh();
+                        });
                     }
 
                     @Override
@@ -127,7 +130,7 @@ public class AttributeTable<T> extends VBox {
                     vBox.setSpacing(5);
                     vBox.setAlignment(Pos.CENTER);
                     flowPane.getChildren().addAll(vBox);
-                    input.setValidator(Optional.ofNullable(field.getAnnotation(Validator.class)));
+//                    input.setValidator(Optional.ofNullable(field.getAnnotation(Validator.class)));
 
                     return (Predicate<T>) v -> {
                         (new ReflectiveObjectProperty<>(v, field.getName(), field.getType())).set(input.getItem());

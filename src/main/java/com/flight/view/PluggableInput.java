@@ -1,10 +1,10 @@
 package com.flight.view;
 
 import com.flight.Main;
-import com.flight.model.Validator;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,16 +29,11 @@ public interface PluggableInput<T> {
 
     Property<T> itemProperty();
 
-    default void setValidator(Optional<Validator> validator) {
-
-    }
 
     default void setStringConverter(StringConverter<T> converter) {
     }
 
-//    default boolean validate(T t) {
-//        return true;
-//    }
+    Property<Boolean> editableProperty();
 
 
     class PluggableComboBox<T> extends ComboBox<T> implements PluggableInput<T> {
@@ -102,19 +97,10 @@ public interface PluggableInput<T> {
 
 
     class PluggableTextField<T> extends TextField implements PluggableInput<T> {
+        private static final Set<KeyCode> PERMITTED_KEYS = Set.of(KeyCode.BACK_SPACE, KeyCode.LEFT, KeyCode.RIGHT);
         private final ObjectProperty<T> objectProperty = new SimpleObjectProperty<>();
-        private final Property<String> textProperty = new SimpleObjectProperty<>() {
-
-            @Override
-            public void setValue(String string) {
-//                if (validate((T) string)) super.setValue(string);
-//                else PluggableTextField.super.setText(super.get());
-
-                super.setValue(string);
-            }
-        };
+        private final Property<String> textProperty = new SimpleObjectProperty<>();
         private StringConverter<T> converter;
-//        private Optional<Validator> validator = Optional.empty();
 
         {
             if (Objects.nonNull(super.getText())) textProperty.setValue(super.getText());
@@ -124,6 +110,7 @@ public interface PluggableInput<T> {
             });
 
             super.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+                if (PERMITTED_KEYS.contains(e.getCode())) return;
                 if (e.getCode() == KeyCode.ENTER) textProperty.setValue(super.getText());
                 if (e.getCode() == KeyCode.ESCAPE) super.setText(textProperty.getValue());
                 e.consume();
@@ -154,26 +141,12 @@ public interface PluggableInput<T> {
             return objectProperty;
         }
 
-//        @Override
-//        public void setValidator(Optional<Validator> validator) {
-//            this.validator = validator;
-//        }
-
-
         @Override
         public void setStringConverter(StringConverter<T> converter) {
             this.converter = converter;
             Bindings.unbindBidirectional(textProperty, objectProperty);
             Bindings.bindBidirectional(textProperty, objectProperty, converter);
         }
-
-//        @Override
-//        public boolean validate(T t) {
-//            if (t.getClass() != String.class) return true;
-//            String string = (String) t;
-//            return validator.stream().map(Validator::value).flatMap(Arrays::stream)
-//                    .allMatch(stringValidator -> stringValidator.test(string));
-//        }
     }
 
 
@@ -192,6 +165,11 @@ public interface PluggableInput<T> {
         @Override
         public Property<Boolean> itemProperty() {
             return super.selectedProperty();
+        }
+
+        @Override
+        public Property<Boolean> editableProperty() {
+            return new SimpleBooleanProperty(true);
         }
     }
 
