@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Data
 public class ClassClassifierPK implements Serializable {
@@ -21,4 +22,17 @@ public class ClassClassifierPK implements Serializable {
     @Id
     @Column(name = "SEAT_NUMBER")
     private int seatNumber;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClassClassifierPK that = (ClassClassifierPK) o;
+        return seatNumber == that.seatNumber && Objects.equals(schedule, that.schedule);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(schedule, seatNumber);
+    }
 }

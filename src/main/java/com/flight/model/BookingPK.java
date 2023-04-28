@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Data
 public class BookingPK implements Serializable {
@@ -25,6 +26,19 @@ public class BookingPK implements Serializable {
     @Id
     @Column(name = "SEAT_NUMBER")
     private int seatNumber;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookingPK bookingPK = (BookingPK) o;
+        return seatNumber == bookingPK.seatNumber && Objects.equals(user, bookingPK.user) && Objects.equals(schedule, bookingPK.schedule);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, schedule, seatNumber);
+    }
 }
 
 

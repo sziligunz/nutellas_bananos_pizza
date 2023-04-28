@@ -13,6 +13,10 @@ import java.util.Optional;
 
 
 public interface ScheduleRepository extends CrudRepository<Schedule, SchedulePK> {
+    @Query("SELECT DISTINCT schedule.flight.departure.city FROM Schedule schedule")
+    List<String> getDepartures();
 
+    @Query("SELECT DISTINCT schedule.flight.arrival.city FROM Schedule schedule")
+    List<String> getArrivals();
 
 }

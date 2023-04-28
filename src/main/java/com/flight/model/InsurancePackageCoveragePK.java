@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Data
 public class InsurancePackageCoveragePK implements Serializable {
@@ -19,4 +20,17 @@ public class InsurancePackageCoveragePK implements Serializable {
     @Id
     @Column(name = "DAMAGE_TYPE")
     private String damageType;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InsurancePackageCoveragePK that = (InsurancePackageCoveragePK) o;
+        return Objects.equals(insurancePackage, that.insurancePackage) && Objects.equals(damageType, that.damageType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(insurancePackage, damageType);
+    }
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.Objects;
 
 @Data
 public class SchedulePK implements Serializable {
@@ -25,4 +26,16 @@ public class SchedulePK implements Serializable {
     @Column(name = "DEPARTURE_TIME")
     private Date departureTime;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SchedulePK that = (SchedulePK) o;
+        return Objects.equals(flight, that.flight) && Objects.equals(plane, that.plane) && Objects.equals(departureTime, that.departureTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(flight, plane, departureTime);
+    }
 }
