@@ -370,15 +370,6 @@ from plane
 inner join schedule on plane.id = schedule.plane_id
 inner join booking on schedule.flight_id = booking.flight_id and schedule.plane_id = booking.plane_id
 group by model_name, schedule.departure_time;
--- How much money did people spend on a flight
-Select
-    model_name,
-    schedule.departure_time
-from plane
-inner join schedule on plane.id = schedule.plane_id
-inner join booking on schedule.flight_id = booking.flight_id and schedule.plane_id = booking.plane_id
-inner join class_classifier on schedule.flight_id = class_classifier.flight_id and schedule.plane_id = class_classifier.plane_id and booking.seat_number = class_classifier.seat_number
-group by model_name, schedule.departure_time;
 -- How many minutes of flight duration there is on a certain day
 Select
     departure_time,
