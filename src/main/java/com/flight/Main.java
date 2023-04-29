@@ -2,10 +2,7 @@ package com.flight;
 
 import com.flight.model.User;
 import com.flight.repo.UserRepository;
-import com.flight.view.AttributeTable;
-import com.flight.view.HelloController;
-import com.flight.view.UserController;
-import com.flight.view.View;
+import com.flight.view.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -227,7 +224,7 @@ public class Main extends Application {
         Button booking = new Button("BookingTest");
         booking.setOnAction(e -> {
             try {
-                changeScene("flight-book.fxml");
+                changeBookingSearchScene();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -257,7 +254,7 @@ public class Main extends Application {
                         menuRoot.getChildren().add(button);
                     });
         } catch (Exception exception) {
-            System.err.println(exception);
+            System.err.println(exception.getMessage());
         }
         menu = new Scene(menuRoot);
     }
@@ -268,10 +265,13 @@ public class Main extends Application {
         System.out.println(user);
     }
 
-    public void changeScene(String fxml) throws IOException {
-        FXMLLoader loader = new FXMLLoader(HelloController.class.getResource(fxml));
+    public void changeBookingSearchScene() throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloController.class.getResource("flight-book.fxml"));
         loader.setControllerFactory(springContext::getBean);
         Parent root = loader.load();
+        BookingController controller = loader.getController();
+        controller.springContext = springContext;
+        controller.user = user;
         Scene scene = new Scene(root);
         stage.setScene(scene);
     }

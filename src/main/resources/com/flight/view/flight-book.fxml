@@ -23,12 +23,13 @@
             <TableColumn fx:id="bookCol" prefWidth="75.0" text="Book" />
         </columns>
       </TableView>
-      <CheckBox fx:id="child" layoutX="729.0" layoutY="109.0" mnemonicParsing="false" text="Child friendly" />
-      <CheckBox fx:id="meal" layoutX="832.0" layoutY="109.0" mnemonicParsing="false" text="Meal" />
-      <DatePicker fx:id="date" layoutX="539.0" layoutY="105.0" />
+      <CheckBox fx:id="childBox" layoutX="729.0" layoutY="109.0" mnemonicParsing="false" text="Child friendly" />
+      <CheckBox fx:id="mealBox" layoutX="832.0" layoutY="109.0" mnemonicParsing="false" text="Meal" />
+      <DatePicker fx:id="datePicker" layoutX="539.0" layoutY="105.0" />
       <Label layoutX="191.0" layoutY="61.0" text="Departure" />
       <Label layoutX="403.0" layoutY="61.0" text="Arrival" />
       <Label layoutX="598.0" layoutY="53.0" text="Date" />
-      <Button layoutX="513.0" layoutY="166.0" mnemonicParsing="false" text="Search" />
+      <Button fx:id="search" layoutX="513.0" layoutY="166.0" mnemonicParsing="false" text="Search" />
+      <Button fx:id="reset" layoutX="597.0" layoutY="166.0" mnemonicParsing="false" text="Reset" />
    </children>
 </AnchorPane>
