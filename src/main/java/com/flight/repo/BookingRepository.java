@@ -14,6 +14,6 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends CrudRepository<Booking, User> {
     @Query("SELECT booking FROM Booking booking WHERE booking.schedule = :#{#schedule} AND booking.user = :#{#user}")
-    List<Booking> getBookingsByScheduleAnAndUser(@Param("schedule") Schedule schedule, @Param("user") User user);
+    List<Booking> getBookingsByScheduleAndUser(@Param("schedule") Schedule schedule, @Param("user") User user);
 
 }

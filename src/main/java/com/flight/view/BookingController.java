@@ -4,6 +4,7 @@ import com.flight.model.Airport;
 import com.flight.model.Schedule;
 import com.flight.model.User;
 import com.flight.repo.ScheduleRepository;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -89,10 +90,12 @@ public class BookingController implements Initializable {
         loader.setControllerFactory(springContext::getBean);
         Parent root = loader.load();
         BookController controller = loader.getController();
+        controller.setSchedule(schedule, user);
         controller.springContext = this.springContext;
         controller.user = this.user;
-        controller.schedule = schedule;
+        //controller.initialize();
         Scene scene = new Scene(root);
+        stage = (Stage)tableView.getScene().getWindow();
         stage.setScene(scene);
     }
 

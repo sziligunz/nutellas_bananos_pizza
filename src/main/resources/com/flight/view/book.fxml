@@ -17,7 +17,7 @@
             <TableColumn fx:id="avaActionCol" minWidth="9.0" prefWidth="70.0" text="Action" />
         </columns>
       </TableView>
-      <Button layoutX="385.0" layoutY="533.0" mnemonicParsing="false" text="Save" />
+      <Button layoutX="385.0" layoutY="533.0" mnemonicParsing="false" onAction="#save" text="Save" />
       <TableView fx:id="pickTableView" layoutX="140.0" layoutY="362.0" prefHeight="154.0" prefWidth="530.0">
          <columns>
             <TableColumn fx:id="pickSeatCol" prefWidth="123.0" text="Seat number" />
