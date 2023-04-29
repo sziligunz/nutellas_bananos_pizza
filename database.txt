@@ -21,9 +21,17 @@ BEGIN
     drop_table_if_exists('"USER"');
     drop_table_if_exists('BOOKING');
     drop_table_if_exists('CLASS_CLASSIFIER');
+    drop_table_if_exists('PRIVILIGES');
 END;
 /
 
+CREATE TABLE Priviliges (
+    id INTEGER GENERATED ALWAYS as identity,
+	user_email VARCHAR(100) NOT NULL,
+	old_privilige VARCHAR(100) NOT NULL,
+	new_privilige VARCHAR(100) NOT NULL,
+	PRIMARY KEY (id)
+);
 
 create table AIRPORT
 (
@@ -394,4 +402,20 @@ ossz int := 0;
 begin
     select count(user_email) into ossz from booking;
     return ossz;
+end;
+
+-- Trigger save user privilege changes into table Privilige
+create or replace trigger user_privileges_updater
+after update on "USER"
+for each row
+begin
+    insert into priviliges (user_email, old_privilige, new_privilige) values(:new.email, :old.privilege, :new.privilege);
+end;
+
+-- Trigger console.log if new flight has been added
+create or replace trigger flight_adder
+after insert on flight
+for each row
+begin
+    dbms_output.put_line('A new flight has been added');
 end;
