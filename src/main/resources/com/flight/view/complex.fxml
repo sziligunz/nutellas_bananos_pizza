@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.flight.view.ComplexController">
+   <children>
+      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Insurance Packages Bought">
+               <content>
+                  <Text fx:id="ipb_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
+               </content>
+            </Tab>
+            <Tab text="Insurance Packages Money Summed">
+               <content>
+                  <Text fx:id="ipms_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
+               </content>
+            </Tab>
+            <Tab text="Insurance Packages Bought All Time">
+               <content>
+                  <Text fx:id="ipbat_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
+               </content>
+            </Tab>
+            <Tab text="Airplanes Fly From Vaccine Required Airports">
+               <content>
+                  <Text fx:id="afvra_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
+               </content>
+            </Tab>
+            <Tab text="Tickets Bought On Flights">
+               <content>
+                  <Text fx:id="tbof_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
+               </content>
+            </Tab>
+            <Tab text="Minutes Of Flight Per Day">
+               <content>
+                  <Text fx:id="mofpd_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

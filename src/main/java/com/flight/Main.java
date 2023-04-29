@@ -229,8 +229,16 @@ public class Main extends Application {
                 throw new RuntimeException(ex);
             }
         });
+        Button complex = new Button("Complex");
+        complex.setOnAction(e -> {
+            try {
+                changeComplexSearchScene();
+            } catch (IOException ex) {
+                throw  new RuntimeException(ex);
+            }
+        });
 
-        menuRoot.getChildren().addAll(logout, booking);
+        menuRoot.getChildren().addAll(logout, booking, complex);
         try (
                 InputStream stream = ClassLoader.getSystemClassLoader()
                         .getResourceAsStream("com.flight.model".replaceAll("[.]", "/"));
@@ -272,6 +280,14 @@ public class Main extends Application {
         BookingController controller = loader.getController();
         controller.springContext = springContext;
         controller.user = user;
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    public void changeComplexSearchScene() throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloController.class.getResource("complex.fxml"));
+        loader.setControllerFactory(springContext::getBean);
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         stage.setScene(scene);
     }
