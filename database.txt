@@ -379,3 +379,19 @@ from schedule
 inner join flight on schedule.flight_id = flight.id
 group by departure_time;
 
+-- function get the number of flights
+create or replace function number_of_flights return INT
+is
+ossz int := 0;
+begin
+    select count(id) into ossz from flight;
+    return ossz;
+end;
+-- function get the number of bookings
+create or replace function number_of_bookings return INT
+is
+ossz int := 0;
+begin
+    select count(user_email) into ossz from booking;
+    return ossz;
+end;
