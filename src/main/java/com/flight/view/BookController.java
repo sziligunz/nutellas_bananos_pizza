@@ -101,7 +101,7 @@ public class BookController {
             generateList.add(temp);
         }
         int maxFirst = schedule.getPlane().getCommercialCapacity() + schedule.getPlane().getBusinessCapacity() + schedule.getPlane().getFirstClassCapacity();
-        for(int i = maxBusiness + 1; i < maxFirst; i++){
+        for(int i = maxBusiness + 1; i <= maxFirst; i++){
             ClassClassifier temp = new ClassClassifier();
             temp.setClazz("first");
             temp.setSeatNumber(i);
@@ -117,15 +117,17 @@ public class BookController {
         int comercial = schedule.getPlane().getCommercialCapacity();
         availableList = new LinkedList<>();
         classClassifiers = classClassifierRepository.getClassClassifierBySchedule(schedule);
-        pickedList = bookingRepository.getBookingsByScheduleAndUser(schedule, user);
-        for (int i = 1; i < first + business + comercial; i++){
+        pickedList = bookingRepository.getBookingsBySchedule(schedule);
+        for (int i = 1; i <= first + business + comercial; i++){
             Booking temp = new Booking();
             temp.setSeatNumber(i);
             temp.setSchedule(schedule);
             temp.setUser(user);
             availableList.add(temp);
         }
+        pickedList.forEach(e->e.setUser(user));
         availableList.removeAll(pickedList);
+        pickedList.clear();
     }
 
     public void refreshTables(){
@@ -145,7 +147,10 @@ public class BookController {
         System.out.println("INIT");
         System.out.println(this.schedule);
         System.out.println(classClassifierRepository.getClassClassifierBySchedule(this.schedule));
-        if (classClassifierRepository.getClassClassifierBySchedule(this.schedule).isEmpty()){
+        int sum = schedule.getPlane().getBusinessCapacity() + schedule.getPlane().getCommercialCapacity() + schedule.getPlane().getFirstClassCapacity();
+        List<ClassClassifier> classifierList = classClassifierRepository.getClassClassifierBySchedule(this.schedule);
+        System.out.println(sum + "=?=" + classifierList.size());
+        if (classifierList.size() != sum ){
             System.out.println("Generating...");
             generateClassClassifier();
         }
@@ -285,6 +290,7 @@ public class BookController {
         controller.springContext = this.springContext;
         controller.user = this.user;
         controller.main = this.main;
+        controller.init();
         Scene scene = new Scene(root);
         Stage stage = (Stage)avaTableView.getScene().getWindow();
         stage.setScene(scene);

@@ -16,6 +16,9 @@ public interface BookingRepository extends CrudRepository<Booking, User> {
     @Query("SELECT booking FROM Booking booking WHERE booking.schedule = :#{#schedule} AND booking.user = :#{#user}")
     List<Booking> getBookingsByScheduleAndUser(@Param("schedule") Schedule schedule, @Param("user") User user);
 
+    @Query("SELECT booking FROM Booking booking WHERE booking.schedule = :#{#schedule}")
+    List<Booking> getBookingsBySchedule(@Param("schedule") Schedule schedule);
+
 
     @Query("SELECT booking FROM Booking booking WHERE booking.user = :#{#user}")
     List<Booking> getBookingsByUser(@Param("user") User user);
