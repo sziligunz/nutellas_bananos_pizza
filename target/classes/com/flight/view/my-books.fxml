@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="572.0" prefWidth="809.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.flight.view.MyBooksController">
+   <children>
+      <TableView fx:id="tableView" layoutX="37.0" layoutY="147.0" prefHeight="253.0" prefWidth="738.0">
+        <columns>
+            <TableColumn fx:id="depCol" prefWidth="77.0" text="Departure" />
+            <TableColumn fx:id="arCol" prefWidth="68.0" text="Arrival" />
+            <TableColumn fx:id="dateCol" prefWidth="75.0" text="Date" />
+          <TableColumn fx:id="seatCol" prefWidth="94.0" text="Seat number" />
+          <TableColumn fx:id="classCol" prefWidth="79.0" text="Class" />
+            <TableColumn fx:id="priceCol" minWidth="0.0" prefWidth="94.0" text="Price" />
+            <TableColumn fx:id="insCol" prefWidth="139.0" text="Insurance_package" />
+            <TableColumn fx:id="actionCol" minWidth="0.0" prefWidth="98.0" text="Action" />
+        </columns>
+      </TableView>
+      <Button layoutX="385.0" layoutY="533.0" mnemonicParsing="false" onAction="#save" text="Save" />
+      <Button layoutX="36.0" layoutY="19.0" mnemonicParsing="false" onAction="#back" text="Back" />
+   </children>
+</AnchorPane>
