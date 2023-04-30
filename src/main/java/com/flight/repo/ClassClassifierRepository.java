@@ -17,4 +17,5 @@ public interface ClassClassifierRepository extends CrudRepository<ClassClassifie
     @Query("SELECT classy FROM ClassClassifier classy WHERE classy.schedule = :#{#schedule}")
     List<ClassClassifier> getClassClassifierBySchedule(@Param("schedule") Schedule schedule);
 
+
 }

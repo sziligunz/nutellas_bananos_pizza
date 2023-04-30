@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -129,11 +130,11 @@ public class Main extends Application {
             Label email = new Label("Email");
             Label pw = new Label("Password");
             TextField emailTF = new TextField();
-            TextField pwTF = new TextField();
+            PasswordField pwTF = new PasswordField();
             Button login = new Button("Login");
             login.setOnAction(e -> {
                 try {
-                    user = userController.login(emailTF.getText(), pwTF.getText());
+                    user = userController.login(emailTF.getText(), String.valueOf(pwTF.getText().hashCode()));
                     loadMenu();
                     gotoMenu();
                 } catch (Exception exception) {
@@ -155,11 +156,11 @@ public class Main extends Application {
             Label pw = new Label("Password");
             TextField emailTF = new TextField();
             TextField fullnameTF = new TextField();
-            TextField pwTF = new TextField();
+            PasswordField pwTF = new PasswordField();
             Button register = new Button("Register");
             register.setOnAction(e -> {
                 try {
-                    user = userController.registerUser(emailTF.getText(), fullnameTF.getText(), pwTF.getText());
+                    user = userController.registerUser(emailTF.getText(), fullnameTF.getText(), String.valueOf(pwTF.getText().hashCode()));
                     loadMenu();
                     gotoMenu();
                 } catch (Exception exception) {
@@ -224,10 +225,18 @@ public class Main extends Application {
             this.user = null;
             gotoMenu();
         });
-        Button booking = new Button("BookingTest");
+        Button booking = new Button("Search flight");
         booking.setOnAction(e -> {
             try {
                 changeBookingSearchScene();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        Button mybookings = new Button("My bookings");
+        mybookings.setOnAction(e -> {
+            try {
+                changeMyBooks();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -241,7 +250,7 @@ public class Main extends Application {
             }
         });
 
-        menuRoot.getChildren().addAll(logout, booking, complex);
+        menuRoot.getChildren().addAll(logout, booking, complex, mybookings);
         try (
                 InputStream stream = ClassLoader.getSystemClassLoader()
                         .getResourceAsStream("com.flight.model".replaceAll("[.]", "/"));
@@ -281,6 +290,19 @@ public class Main extends Application {
         loader.setControllerFactory(springContext::getBean);
         Parent root = loader.load();
         BookingController controller = loader.getController();
+        controller.springContext = springContext;
+        controller.user = user;
+        controller.main = this;
+        controller.init();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    public void changeMyBooks() throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloController.class.getResource("my-books.fxml"));
+        loader.setControllerFactory(springContext::getBean);
+        Parent root = loader.load();
+        MyBooksController controller = loader.getController();
         controller.springContext = springContext;
         controller.user = user;
         controller.main = this;

@@ -64,7 +64,7 @@ public class Schedule {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Schedule schedule = (Schedule) o;
-        return Objects.equals(getFlight(), schedule.getFlight()) && Objects.equals(getPlane(), schedule.getPlane()) && Objects.equals(getDepartureTime(), schedule.getDepartureTime());
+        return Objects.equals(getFlight(), schedule.getFlight()) && Objects.equals(getPlane(), schedule.getPlane()) && Objects.equals(getDepartureTime().toString(), schedule.getDepartureTime().toString());
     }
 
     @Override
