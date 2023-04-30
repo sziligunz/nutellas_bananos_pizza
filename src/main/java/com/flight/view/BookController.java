@@ -11,9 +11,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -197,9 +201,11 @@ public class BookController {
                 {
                     bookBtn.setOnAction(event -> {
                         Booking booking = getTableRow().getItem();
-                        pickedList.add(booking);
-                        availableList.remove(booking);
-                        refreshTables();
+                        if(booking.getInsurancePackage() != null){
+                            pickedList.add(booking);
+                            availableList.remove(booking);
+                            refreshTables();
+                        }
                     });
                     //System.out.println(bookBtn);
                 }
@@ -267,5 +273,17 @@ public class BookController {
 
             });
         }
+    }
+
+    public void back() throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloController.class.getResource("flight-book.fxml"));
+        loader.setControllerFactory(springContext::getBean);
+        Parent root = loader.load();
+        BookingController controller = loader.getController();
+        controller.springContext = this.springContext;
+        controller.user = this.user;
+        Scene scene = new Scene(root);
+        Stage stage = (Stage)avaTableView.getScene().getWindow();
+        stage.setScene(scene);
     }
 }

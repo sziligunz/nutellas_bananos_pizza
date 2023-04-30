@@ -98,6 +98,18 @@ public class BookingController implements Initializable {
         stage = (Stage)tableView.getScene().getWindow();
         stage.setScene(scene);
     }
+    private void back() throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloController.class.getResource("hello-view.fxml"));
+        loader.setControllerFactory(springContext::getBean);
+        Parent root = loader.load();
+        HelloController controller = loader.getController();
+        controller.springContext = this.springContext;
+        controller.user = this.user;
+        //controller.initialize();
+        Scene scene = new Scene(root);
+        stage = (Stage)tableView.getScene().getWindow();
+        stage.setScene(scene);
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
