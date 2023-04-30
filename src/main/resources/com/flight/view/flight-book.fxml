@@ -31,5 +31,6 @@
       <Label layoutX="598.0" layoutY="53.0" text="Date" />
       <Button fx:id="search" layoutX="513.0" layoutY="166.0" mnemonicParsing="false" text="Search" />
       <Button fx:id="reset" layoutX="597.0" layoutY="166.0" mnemonicParsing="false" text="Reset" />
+      <Button layoutX="46.0" layoutY="36.0" mnemonicParsing="false" onAction="#back" text="Back" />
    </children>
 </AnchorPane>

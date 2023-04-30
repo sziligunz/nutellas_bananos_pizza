@@ -1,5 +1,6 @@
 package com.flight.view;
 
+import com.flight.Main;
 import com.flight.model.*;
 import com.flight.repo.BookingRepository;
 import com.flight.repo.ClassClassifierRepository;
@@ -38,6 +39,7 @@ public class BookController {
     public ConfigurableApplicationContext springContext;
     public User user;
     public Schedule schedule;
+    public Main main;
 
     @FXML
     private TableView<Booking> avaTableView;
@@ -282,6 +284,7 @@ public class BookController {
         BookingController controller = loader.getController();
         controller.springContext = this.springContext;
         controller.user = this.user;
+        controller.main = this.main;
         Scene scene = new Scene(root);
         Stage stage = (Stage)avaTableView.getScene().getWindow();
         stage.setScene(scene);

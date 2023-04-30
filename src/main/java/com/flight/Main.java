@@ -58,10 +58,10 @@ public class Main extends Application {
         }});
     }};
     public User user;
-    private ConfigurableApplicationContext springContext;
+    public ConfigurableApplicationContext springContext;
     private UserController userController;
-    private Stage stage;
-    private Scene menu;
+    public Stage stage;
+    public Scene menu;
 
     public static void main(String[] args) {
         launch(Main.class, args);
@@ -104,11 +104,15 @@ public class Main extends Application {
     public void init() throws IOException {
         springContext = new SpringApplicationBuilder(Main.class).web(WebApplicationType.NONE).run();
         Main.repositories = new Repositories(springContext);
+        loadFxml();
+        loadUser();
+    }
+
+    public void loadFxml(){
         FXMLLoader fxmlLoader = new FXMLLoader(HelloController.class.getResource("hello-view.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         menu = new Scene(new VBox());
 //        root = fxmlLoader.load();
-        loadUser();
     }
 
     @Override
@@ -280,6 +284,7 @@ public class Main extends Application {
         BookingController controller = loader.getController();
         controller.springContext = springContext;
         controller.user = user;
+        controller.main = this;
         Scene scene = new Scene(root);
         stage.setScene(scene);
     }

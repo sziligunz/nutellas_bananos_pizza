@@ -1,5 +1,6 @@
 package com.flight.view;
 
+import com.flight.Main;
 import com.flight.model.Airport;
 import com.flight.model.Schedule;
 import com.flight.model.User;
@@ -35,6 +36,7 @@ public class BookingController implements Initializable {
     private Stage stage;
     private Scene scene;
     public User user;
+    public Main main;
     public ConfigurableApplicationContext springContext;
     private final ScheduleRepository repository;
     @FXML
@@ -93,22 +95,19 @@ public class BookingController implements Initializable {
         controller.setSchedule(schedule, user);
         controller.springContext = this.springContext;
         controller.user = this.user;
+        controller.main = this.main;
         //controller.initialize();
         Scene scene = new Scene(root);
         stage = (Stage)tableView.getScene().getWindow();
         stage.setScene(scene);
     }
-    private void back() throws IOException {
-        FXMLLoader loader = new FXMLLoader(HelloController.class.getResource("hello-view.fxml"));
-        loader.setControllerFactory(springContext::getBean);
-        Parent root = loader.load();
-        HelloController controller = loader.getController();
-        controller.springContext = this.springContext;
-        controller.user = this.user;
-        //controller.initialize();
-        Scene scene = new Scene(root);
+    public void back() throws IOException {
         stage = (Stage)tableView.getScene().getWindow();
-        stage.setScene(scene);
+        main.loadMenu();
+        //controller.initialize();
+        //Scene scene = new Scene(root);
+        //stage = main.stage;
+        stage.setScene(main.menu);
     }
 
     @Override
