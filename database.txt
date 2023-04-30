@@ -860,6 +860,20 @@ Select departure_time,
 from schedule
          inner join flight on schedule.flight_id = flight.id
 group by departure_time;
+-- How many planes does airlines have
+Select
+    name,
+    count(model_name) as DB
+from airline
+inner join plane on airline.name = plane.owning_airline
+group by name;
+-- How many people can airlines fly at once
+Select
+    name,
+    sum(plane.first_class_capacity + plane.business_capacity + plane.commercial_capacity) as CAPACITY
+from airline
+inner join plane on airline.name = plane.owning_airline
+group by name;
 
 -- function get the number of flights
 create or replace function number_of_flights return INT

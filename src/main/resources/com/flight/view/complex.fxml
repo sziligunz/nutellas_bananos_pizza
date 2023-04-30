@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.flight.view.ComplexController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.flight.view.ComplexController">
    <children>
       <TabPane layoutY="30.0" prefHeight="370.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -38,6 +38,16 @@
             <Tab text="Minutes Of Flight Per Day">
                <content>
                   <Text fx:id="mofpd_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
+               </content>
+            </Tab>
+            <Tab text="Number Of Planes Per Airline">
+               <content>
+                  <Text fx:id="noppa_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
+               </content>
+            </Tab>
+            <Tab text="Number Of Seats Per Airline">
+               <content>
+                  <Text fx:id="nospa_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
                </content>
             </Tab>
         </tabs>

@@ -86,4 +86,22 @@ public interface UserRepository extends CrudRepository<User, String> {
             inner join flight on schedule.flight_id = flight.id
             group by departure_time""", nativeQuery = true)
     List<Object[]> minutes_of_flight_per_day();
+
+    @Query(value = """
+            Select
+                name,
+                count(model_name) as DB
+            from airline
+            inner join plane on airline.name = plane.owning_airline
+            group by name""", nativeQuery = true)
+    List<Object[]> planes_per_airline();
+
+    @Query(value = """
+            Select
+                name,
+                sum(plane.first_class_capacity + plane.business_capacity + plane.commercial_capacity) as CAPACITY
+            from airline
+            inner join plane on airline.name = plane.owning_airline
+            group by name""", nativeQuery = true)
+    List<Object[]> number_of_people_per_airline();
 }

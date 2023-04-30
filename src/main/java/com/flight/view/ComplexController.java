@@ -41,6 +41,10 @@ public class ComplexController {
     private Text tbof_output;
     @FXML
     private Text mofpd_output;
+    @FXML
+    private Text noppa_output;
+    @FXML
+    private Text nospa_output;
 
     public void back(){
         Stage stage = (Stage)ipb_output.getScene().getWindow();
@@ -74,6 +78,14 @@ public class ComplexController {
         res[0] = "Departure time\tDuration (minutes)\n";
         userRepository.minutes_of_flight_per_day().stream().map(Arrays::toString).map(e -> e.replace(",", "\t").replace("[", "").replace("]", "").replace("00:00:00.0", "") + "\n").forEach(e -> res[0] += e);
         mofpd_output.setText(res[0]);
+
+        res[0] = "Airline\tDB\n";
+        userRepository.planes_per_airline().stream().map(Arrays::toString).map(e -> e.replace(",", "\t").replace("[", "").replace("]", "") + "\n").forEach(e -> res[0] += e);
+        noppa_output.setText(res[0]);
+
+        res[0] = "Airline\tDB\n";
+        userRepository.number_of_people_per_airline().stream().map(Arrays::toString).map(e -> e.replace(",", "\t").replace("[", "").replace("]", "") + "\n").forEach(e -> res[0] += e);
+        nospa_output.setText(res[0]);
     }
 
 }
