@@ -1,13 +1,18 @@
 package com.flight.view;
 
+import com.flight.Main;
+import com.flight.model.Schedule;
+import com.flight.model.User;
 import com.flight.repo.UserRepository;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import oracle.sql.INTERVALDS;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +25,10 @@ import java.util.Arrays;
 public class ComplexController {
 
     private final UserRepository userRepository;
-
+    public ConfigurableApplicationContext springContext;
+    public User user;
+    public Schedule schedule;
+    public Main main;
     @FXML
     private Text ipb_output;
     @FXML
@@ -34,6 +42,14 @@ public class ComplexController {
     @FXML
     private Text mofpd_output;
 
+    public void back(){
+        Stage stage = (Stage)ipb_output.getScene().getWindow();
+        main.loadMenu();
+        //controller.initialize();
+        //Scene scene = new Scene(root);
+        //stage = main.stage;
+        stage.setScene(main.menu);
+    }
     public void initialize() {
         String[] res = {"Departure time\tInsurance package\tMoney\n"};
         userRepository.insurance_packages_bought().stream().map(Arrays::toString).map(e -> e.replace(",", "\t").replace("[", "").replace("]", "").replace("00:00:00.0", "") + "\n").forEach(e -> res[0] += e);

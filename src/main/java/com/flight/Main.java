@@ -236,7 +236,7 @@ public class Main extends Application {
         Button mybookings = new Button("My bookings");
         mybookings.setOnAction(e -> {
             try {
-                changeMyBooks();
+                if(!user.getPrivilege().equals("guest")) changeMyBooks();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -315,6 +315,10 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(HelloController.class.getResource("complex.fxml"));
         loader.setControllerFactory(springContext::getBean);
         Parent root = loader.load();
+        ComplexController controller = loader.getController();
+        controller.main = this;
+        controller.user = user;
+        controller.springContext = springContext;
         Scene scene = new Scene(root);
         stage.setScene(scene);
     }
