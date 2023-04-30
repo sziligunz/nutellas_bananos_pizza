@@ -45,6 +45,8 @@ public class ComplexController {
     private Text noppa_output;
     @FXML
     private Text nospa_output;
+    @FXML
+    private Text fcoa_output;
 
     public void back(){
         Stage stage = (Stage)ipb_output.getScene().getWindow();
@@ -83,9 +85,13 @@ public class ComplexController {
         userRepository.planes_per_airline().stream().map(Arrays::toString).map(e -> e.replace(",", "\t").replace("[", "").replace("]", "") + "\n").forEach(e -> res[0] += e);
         noppa_output.setText(res[0]);
 
-        res[0] = "Airline\tDB\n";
+        res[0] = "Airline\tCapacity\n";
         userRepository.number_of_people_per_airline().stream().map(Arrays::toString).map(e -> e.replace(",", "\t").replace("[", "").replace("]", "") + "\n").forEach(e -> res[0] += e);
         nospa_output.setText(res[0]);
+
+        res[0] = "Airline\tFuel consumption\n";
+        userRepository.fuel_consumption_of_airlines().stream().map(Arrays::toString).map(e -> e.replace(",", "\t").replace("[", "").replace("]", "") + "\n").forEach(e -> res[0] += e);
+        fcoa_output.setText(res[0]);
     }
 
 }

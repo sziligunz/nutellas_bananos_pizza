@@ -874,6 +874,13 @@ Select
 from airline
 inner join plane on airline.name = plane.owning_airline
 group by name;
+-- How much fuel do an airline's airplanes use
+Select
+    name,
+    sum(fuel_consumption) as SUMMED_FUEL
+from airline
+inner join plane on airline.name = plane.owning_airline
+group by name;
 
 -- function get the number of flights
 create or replace function number_of_flights return INT

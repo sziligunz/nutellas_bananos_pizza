@@ -50,6 +50,11 @@
                   <Text fx:id="nospa_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
                </content>
             </Tab>
+            <Tab text="Fuel Consumption Of Airlines">
+               <content>
+                  <Text fx:id="fcoa_output" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="598.9368286132812" />
+               </content>
+            </Tab>
         </tabs>
       </TabPane>
       <Button layoutX="8.0" layoutY="5.0" mnemonicParsing="false" onAction="#back" text="Back" />

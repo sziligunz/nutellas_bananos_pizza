@@ -104,4 +104,13 @@ public interface UserRepository extends CrudRepository<User, String> {
             inner join plane on airline.name = plane.owning_airline
             group by name""", nativeQuery = true)
     List<Object[]> number_of_people_per_airline();
+
+    @Query(value = """
+            Select
+                name,
+                sum(fuel_consumption) as SUMMED_FUEL
+            from airline
+            inner join plane on airline.name = plane.owning_airline
+            group by name""", nativeQuery = true)
+    List<Object[]> fuel_consumption_of_airlines();
 }
