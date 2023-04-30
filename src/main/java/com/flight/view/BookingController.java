@@ -31,7 +31,7 @@ import java.sql.Date;
 @Component
 @Scope("prototype")
 @RequiredArgsConstructor
-public class BookingController implements Initializable {
+public class BookingController {
 
     private Stage stage;
     private Scene scene;
@@ -110,8 +110,8 @@ public class BookingController implements Initializable {
         stage.setScene(main.menu);
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+    public void init() {
         ObservableList<String> departures = FXCollections.observableArrayList(repository.getDepartures());
         depCombo.setItems(departures);
         ObservableList<String> arrivals = FXCollections.observableArrayList(repository.getArrivals());
@@ -140,30 +140,34 @@ public class BookingController implements Initializable {
             String city = p.getValue().getFlight().isMealAvailable()?"Yes":"No";
             return new SimpleStringProperty(city);
         });
-        bookCol.setCellFactory(param ->  new TableCell<>(){
-            private final Button bookBtn = new Button("Book");
+        if(user.getPrivilege()!="guest"){
+            bookCol.setCellFactory(param ->  new TableCell<>(){
 
-            {
-                bookBtn.setOnAction(event -> {
-                    try {
-                        booking(getTableRow().getItem());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                private final Button bookBtn = new Button("Book");
+
+                {
+                    bookBtn.setOnAction(event -> {
+                        try {
+                            booking(getTableRow().getItem());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    //System.out.println(bookBtn);
+                }
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if(empty){
+                        setGraphic(null);
                     }
-                });
-                //System.out.println(bookBtn);
-            }
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if(empty){
-                    setGraphic(null);
+                    else{
+                        setGraphic(bookBtn);
+                    }
                 }
-                else{
-                    setGraphic(bookBtn);
-                }
-            }
 
-        });
+            });
+        }
+
     }
 }

@@ -39,12 +39,8 @@ import java.util.*;
 public class Main extends Application {
     private static Repositories repositories;
     private final Map<String, ArrayList<String>> privs = new HashMap<>() {{
-        put("guest", new ArrayList<>() {{
-            add("Booking");
-        }});
-        put("user", new ArrayList<>() {{
-            add("Booking");
-        }});
+        put("guest", new ArrayList<>());
+        put("user", new ArrayList<>());
         put("administrator", new ArrayList<>() {{
             add("Plane");
             add("Airport");
@@ -206,7 +202,10 @@ public class Main extends Application {
         });
         Button quest = new Button("Guest");
         quest.setOnAction(e -> {
+            user = new User();
+            user.setPrivilege("guest");
             loadMenu();
+            gotoMenu();
         });
         menuRoot.getChildren().add(login);
         menuRoot.getChildren().add(register);
@@ -285,6 +284,7 @@ public class Main extends Application {
         controller.springContext = springContext;
         controller.user = user;
         controller.main = this;
+        controller.init();
         Scene scene = new Scene(root);
         stage.setScene(scene);
     }
